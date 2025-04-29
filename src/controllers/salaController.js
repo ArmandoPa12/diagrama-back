@@ -32,17 +32,13 @@ exports.crearSalaProyecto = async(req, res) => {
 //get usuarios
 exports.getColaboradores = async(req, res) => {
     const { proyectoId } = req.body;
-
-
     try {
-
-
         const usuarios = await prisma.usuario.findMany({
             where: {
                 usuarioSalas: {
                     some: {
                         sala: {
-                            proyectoId: proyectoId, // Filtramos por el proyectoId
+                            proyectoId: proyectoId,
                         },
                     },
                 },

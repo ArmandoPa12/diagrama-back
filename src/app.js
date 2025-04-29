@@ -23,7 +23,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: {
-        origin: '*', // Ajusta esto según tu frontend
+        origin: '*',
         methods: ['GET', 'POST']
     }
 });
@@ -32,5 +32,5 @@ require('./services/websocket')(io);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

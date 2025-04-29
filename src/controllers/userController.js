@@ -56,7 +56,6 @@ exports.getUser = async(req, res) => {
                 proyectos: true
             }
         });
-        console.log(user);
         if (!user) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }

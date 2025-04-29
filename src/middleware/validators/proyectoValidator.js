@@ -8,7 +8,6 @@ exports.proyectoValidator = [
     .notEmpty().withMessage('el nombre de usuario es obligatorio')
     .isLength({ min: 3 }).withMessage('debe ser de al menos 3 caracteres')
     .custom(async(value) => {
-        // console.log(value)
         const proyecto = await prisma.proyecto.findFirst({
             where: { nombre: value },
         });

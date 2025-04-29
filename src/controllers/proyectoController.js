@@ -40,29 +40,13 @@ exports.getProyecto = async(req, res) => {
 
 exports.getProyectoUno = async(req, res) => {
     const { userId, proyectoId } = req.body;
-    console.log(userId, proyectoId);
     try {
-        // const proyectos = await prisma.usuario.findUnique({
-        //     where: { id: userId },
-        //     include: {
-        //         proyectos: true
-        //     }
-
-        // });
-
-
         const proyecto = await prisma.proyecto.findFirst({
             where: {
                 id: proyectoId,
                 usuarioId: userId
             }
         });
-
-        // if (!proyecto) {
-        //     return res.status(404).json({ error: 'error en los proyectos dentro del try' });
-        // }
-
-
         res.json(proyecto);
     } catch (error) {
         res.status(500).json({ error: 'error en los proyectos' });
@@ -81,8 +65,6 @@ exports.createProyecto = async(req, res) => {
     const arbol = null
     const jsonString = JSON.stringify([diagramaCode, arbol]);
     try {
-
-
         const nuevoProyecto = await prisma.proyecto.create({
             data: {
                 nombre: nombre,
@@ -135,7 +117,7 @@ exports.guardarImagenProyecto = async(req, res) => {
     const fileName = `${Date.now()}_${file.originalname}`;
     const filePath = path.join(uploadsDir, fileName);
 
-    // Asegurar que la carpeta exista
+
     if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir);
     }
@@ -160,7 +142,7 @@ exports.guardarImagenProyecto = async(req, res) => {
             const proyectoActualizado = await prisma.proyecto.update({
                 where: { id: Number(id) },
                 data: {
-                    imagenUrl: imageUrl // Asegúrate de que tu campo se llame así en Prisma
+                    imagenUrl: imageUrl
                 }
             });
 

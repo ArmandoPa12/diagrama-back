@@ -2,12 +2,10 @@ const prisma = require('../utils/configPrisma');
 
 module.exports = function(io) {
     io.on('connection', (socket) => {
-        console.log("🧠 Usuario conectado:", socket.id);
+        console.log("nuevo conectado", socket.id);
 
         socket.on("join-room", async({ codigo, usuario }) => {
             socket.join(codigo);
-
-            console.log(`${usuario} se unió a la sala ${codigo}`);
             try {
                 const consulta = await prisma.sala.findUnique({
                     where: {
@@ -20,15 +18,11 @@ module.exports = function(io) {
 
                 if (consulta.proyecto && consulta.proyecto.diagrama) {
                     socket.emit("load-diagram", { payload: consulta.proyecto.diagrama, data: consulta.proyecto });
-                    console.log("📦 Diagrama enviado al nuevo usuario.");
-                } else {
-                    console.log("No se encontró el proyecto o no tiene diagrama.");
                 }
             } catch (error) {
-                console.error("Error al obtener el diagrama:", error);
+                console.error("error al obtener el diagrama:", error);
             }
 
-            // Notifica a los demás en la sala
             socket.to(codigo).emit("user-joined", { usuario });
 
         });
@@ -41,7 +35,6 @@ module.exports = function(io) {
                 });
 
                 if (!sala || !sala.proyecto) return;
-                console.log(diagrama)
                 const [diagramaNode, arbol] = diagrama;
 
                 const actualizado = await prisma.proyecto.update({
@@ -50,16 +43,12 @@ module.exports = function(io) {
                         diagrama: JSON.stringify({ diagramaNode, arbol })
                     }
                 });
-
-                // Si se guarda correctamente, lo emites a los demás
                 socket.to(codigo).emit("add-node", diagrama);
-                // Después de guardar el nuevo diagrama en la base de datos:
-                // console.log('se emite update', actualizado);
 
                 socket.to(codigo).emit("update-diagram", { payload: actualizado.diagrama });
 
             } catch (error) {
-                console.error("❌ Error al guardar el diagrama:", error);
+                console.error("error al guardar el diagrama:", error);
             }
         });
 
@@ -80,11 +69,10 @@ module.exports = function(io) {
                     }
                 });
 
-                // Después de guardar el nuevo diagrama en la base de datos:
                 socket.to(codigo).emit("update-diagram", { payload: actualizado });
 
             } catch (error) {
-                console.error("❌ Error al guardar el diagrama:", error);
+                console.error("error al guardar el diagrama:", error);
             }
         });
 
@@ -93,7 +81,7 @@ module.exports = function(io) {
         });
 
         socket.on('disconnect', async() => {
-            console.log("🧠 Usuario desconectado:", socket.id);
+            console.log("usuario desconectado:", socket.id);
 
         });
 
